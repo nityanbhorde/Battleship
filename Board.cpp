@@ -60,7 +60,7 @@ bool Board::placeShip(Point topOrLeft, int shipId, Direction dir)
 	char symbol = m_game.shipSymbol(shipId);
 	int row = topOrLeft.r;
 	int col = topOrLeft.c;
-	if (row > m_game.rows() - 1 || col > m_game.cols() - 1 || row < 0 || col < 0) { // if part of ship is out of bounds return false 
+	if (!m_game.isValid(topOrLeft)) { // if part of ship is out of bounds return false 
 		return false;
 	}
 	char history[5];// keep track of what we may  overwrite on board in case of errors
@@ -192,7 +192,7 @@ bool Board::attack(Point p, bool& shotHit, bool& shipDestroyed, int& shipId)
 {
 	int row = p.r;
 	int col = p.c;
-	if (row > m_game.rows() || col > m_game.cols()) {
+	if (!m_game.isValid(p)) {
 		return false;
 	}
 	if (m_board[row][col] == 'X' || m_board[row][col] == 'o') {
