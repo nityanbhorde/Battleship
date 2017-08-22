@@ -18,9 +18,7 @@ class Game
     int rows() const;
     int cols() const;
     bool isValid(Point p) const;
-	int lookUp(char key) const {
-		return 1;
-	}
+	int lookUp(char key) const;
     Point randomPoint() const;
     bool addShip(int length, char symbol, std::string name);
     int nShips() const;
@@ -35,17 +33,17 @@ class Game
   private:
 	  class Ship {
 	  public:
-		  Ship(std::string name, char symbol, int id, int length)
-			  : m_name(name), m_symbol(symbol), m_id(id), m_length(length) {}
-	  private:
+		  Ship(std::string name, char symbol, int length)
+			  : m_name(name), m_symbol(symbol), m_length(length) {}
+		  Ship() {}
 		  std::string m_name;
 		  char m_symbol;
-		  int m_id;
 		  int m_length;
 	  };
 	int m_rows;
 	int m_cols;
-	std::vector<Ship> ship_vec;
+	Ship * ship_arr[100];
+	int counter;
 };
 
 #endif // GAME_INCLUDED

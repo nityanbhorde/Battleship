@@ -20,7 +20,13 @@ bool Game::isValid(Point p) const
 {
     return p.r >= 0  &&  p.r < rows()  &&  p.c >= 0  &&  p.c < cols();
 }
-
+int Game :: lookUp(char key) const {
+	for (int i = 0; i < counter; i++) {
+		if (key == ship_arr[i]->m_symbol) {
+			return i;
+		}
+	}
+}
 Point Game::randomPoint() const
 {
     return Point(randInt(rows()), randInt(cols()));
@@ -39,14 +45,16 @@ Game::Game(int nRows, int nCols)
         cout << "Number of columns must be >= 1 and <= " << MAXCOLS << endl;
         exit(1);
     }
-	
+	counter = 0;
 	m_rows = nRows;
 	m_cols = nCols;
 }
 
 Game::~Game()
 {
-   
+	for (int i = 0; i < counter; i++) {
+		delete ship_arr[counter];
+   }
 }
 
 int Game::rows() const
@@ -101,31 +109,32 @@ bool Game::addShip(int length, char symbol, string name)
         cout << "Board is too small to fit all ships" << endl;
         return false;
     }
-	Ship * temp_ship = new Ship(name,symbol,nShips(),length);
+	Ship * temp_ship = new Ship(name,symbol,length);
+	ship_arr[counter] = temp_ship;
+	counter++;
 	return true;
 }
 
 int Game::nShips() const
 {
-	return 1;
+	return counter;
 }
 
 int Game::shipLength(int shipId) const
 {
     assert(shipId >= 0  &&  shipId < nShips());
-	return 1;
+	return ship_arr[shipId]->m_length;
 }
 
 char Game::shipSymbol(int shipId) const
 {
-    assert(shipId >= 0  &&  shipId < nShips());
-	return '?';
+	assert(shipId >= 0 && shipId < nShips());
+	return ship_arr[shipId]->m_symbol;
 }
-
 string Game::shipName(int shipId) const
 {
     assert(shipId >= 0  &&  shipId < nShips());
-	return "lfkajd";
+	return ship_arr[shipId]->m_name;
 }
 
 Player* Game::play(Player* p1, Player* p2, bool shouldPause)
