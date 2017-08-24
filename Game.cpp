@@ -68,7 +68,7 @@ int Game::cols() const
 }
 
 
-bool Game::addShip(int length, char symbol, string name)
+bool Game::addShip(int length, char symbol, string name) // attempts to add a new type of ship to the game and put in our array
 {
     if (length < 1)
     {
@@ -137,12 +137,65 @@ string Game::shipName(int shipId) const
 	return ship_arr[shipId]->m_name;
 }
 
-Player* Game::play(Player* p1, Player* p2, bool shouldPause)
+Player* Game::play(Player* p1, Player* p2, bool shouldPause) // attempts to run a game between two players
 {
-    if (p1 == nullptr  ||  p2 == nullptr  ||  nShips() == 0)
-        return nullptr;
-    Board b1(*this);
-    Board b2(*this);
-	return nullptr;
+	if (p1 == nullptr || p2 == nullptr || nShips() == 0)
+		return nullptr;
+	Board b1(*this);
+	Board b2(*this);
+	if (!(p1->placeShips(b1)) || !(p2->placeShips(b2))) {
+		return nullptr;
+	}
+	while (!b1.allShipsDestroyed() && !b2.allShipsDestroyed()) {// while there is at least one ship on each board, run the game!
+		bool shotHit, shipDestroyed;
+		int shipId;
+		if (p1->isHuman()) {
+			b2.display(true);
+			Point attack = p1->recommendAttack();
+			bool valid;
+			valid = b2.attack(attack, shotHit, shipDestroyed, shipId); // player ones turn 
+			p1->recordAttackResult(attack, valid, shotHit, shipDestroyed, shipId);
+			b2.display(true);
+		}
+		else {
+			b2.display(false);
+			Point attack = p1->recommendAttack();
+			bool valid;
+			valid = b2.attack(attack, shotHit, shipDestroyed, shipId);
+			p1->recordAttackResult(attack, valid, shotHit, shipDestroyed, shipId);
+			b2.display(false);
+		}
+		if (p2->isHuman()) {
+			bool shotHit1, shipDestroyed1;
+			int shipId1; // p2 turn 
+			b1.display(true);
+			Point attack1 = p2->recommendAttack();
+			bool valid1;
+			valid1 = b1.attack(attack1, shotHit1, shipDestroyed1, shipId1);
+			p2->recordAttackResult(attack1, valid1, shotHit1, shipDestroyed1, shipId1);
+			b1.display(true);
+		}
+		else {
+			bool shotHit1, shipDestroyed1;
+			int shipId1; // p2 turn 
+			b1.display(false);
+			Point attack1 = p2->recommendAttack();
+			bool valid1;
+			valid1 = b1.attack(attack1, shotHit1, shipDestroyed1, shipId1);
+			p2->recordAttackResult(attack1, valid1, shotHit1, shipDestroyed1, shipId1);
+			b1.display(false);
+		}
+	}
+	if (b1.allShipsDestroyed()) {
+		if (p1->isHuman()) {
+			b2.display(false);
+		}
+		return p2;
+	}
+	if (b2.allShipsDestroyed()) {
+		if(p2->isHuman())
+			b1.display(false);
+		return p1;
+	}
+	
 }
-

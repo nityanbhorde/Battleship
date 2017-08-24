@@ -14,6 +14,12 @@ class Point
 {
   public:
     Point() : r(0), c(0) {}
+	bool operator ==(const Point &other) {
+		if (this->r == other.r && this->c == other.c) {
+			return true;
+		}
+		return false;
+	}
     Point(int rr, int cc) : r(rr), c(cc) {}
     int r;
     int c;

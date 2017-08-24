@@ -64,7 +64,7 @@ bool Board::placeShip(Point topOrLeft, int shipId, Direction dir)
 		return false;
 	}
 	char history[5];// keep track of what we may  overwrite on board in case of errors
-	if (dir == 1) {
+	if (dir == 0) {
 		int i = 0;
 		while( i < length){
 			if ((m_board[row][col + i]) != '.') { // if its anything but empty return false, otherwise assign with symbol
@@ -112,7 +112,7 @@ bool Board::unplaceShip(Point topOrLeft, int shipId, Direction dir)
 	int col = topOrLeft.c;
 	char symbol = m_game.shipSymbol(shipId);
 	
-	if (dir == 1) {
+	if (dir == 0) {
 		for (int i = 0; i < length; i++) {
 			if (m_board[row][col + i] != symbol) { // if we dont have our symbol, undo, otherwise replace it with the empty space
 				while (i > 0) {
