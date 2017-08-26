@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <queue>
-#include "globals.h"
+#include "../globals.h"
 class Point;
 class Board;
 class Game;

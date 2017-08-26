@@ -1,7 +1,7 @@
 
-#include "Game.h"
-#include "Player.h"
-#include "Board.h"
+#include "Game/Game.h"
+#include "Player/Player.h"
+#include "Board/Board.h"
 #include <iostream>
 #include <string>
 
@@ -81,9 +81,6 @@ int main()
         }
         cout << "The mediocre player won " << nMediocreWins << " out of "
              << NTRIALS << " games." << endl;
-          // We'd expect a mediocre player to win most of the games against
-          // an awful player.  Similarly, a good player should outperform
-          // a mediocre player.
     }
     else
     {

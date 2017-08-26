@@ -1,7 +1,7 @@
 #ifndef BOARD_INCLUDED
 #define BOARD_INCLUDED
 
-#include "globals.h"
+#include "../globals.h"
 
 class Game;
 

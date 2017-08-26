@@ -1,7 +1,7 @@
 #include "Player.h"
-#include "Board.h"
-#include "Game.h"
-#include "globals.h"
+#include "../Board/Board.h"
+#include "../Game/Game.h"
+#include "../globals.h"
 #include <iostream>
 #include <string>
 

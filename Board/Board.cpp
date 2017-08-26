@@ -1,6 +1,6 @@
 #include "Board.h"
-#include "Game.h"
-#include "globals.h"
+#include "../Game/Game.h"
+#include "../globals.h"
 #include <iostream>
 
 using namespace std;
