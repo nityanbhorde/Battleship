@@ -8,10 +8,7 @@ This is an implementation of the classic game Battleship that allows you to play
 1. Board: This class maintains the board data structure. During a game,
 there will be an instance of the Board class for each player.
 
-2. A Player abstract base class: This base class specifies the interface for all
-players. You will be given this class. A Player must  do two things:
-a. Place its ships on the board
-b. Make attacks on its opponent.
+2. A Player abstract base class: This base class specifies the interface for all players. 
 
 3. An AwfulPlayer class: attacks in a pattern and groups its ships up.
 
