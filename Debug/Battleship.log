@@ -1,5 +1,11 @@
 ﻿  Game.cpp
+  Generating Code...
 c:\users\nityan\desktop\projects\battleship\game.cpp(29): warning C4715: 'Game::lookUp': not all control paths return a value
-c:\users\nityan\desktop\projects\battleship\game.cpp(201): warning C4715: 'Game::play': not all control paths return a value
+c:\users\nityan\desktop\projects\battleship\game.cpp(204): warning C4715: 'Game::play': not all control paths return a value
+  Compiling...
+  main.cpp
+  Player.cpp
+  Generating Code...
+c:\users\nityan\desktop\projects\battleship\player.cpp(315): warning C4715: 'MediocrePlayer::recommendAttack': not all control paths return a value
   Battleship.vcxproj -> C:\Users\Nityan\Desktop\Projects\Battleship\Debug\Battleship.exe
   Battleship.vcxproj -> C:\Users\Nityan\Desktop\Projects\Battleship\Debug\Battleship.pdb (Partial PDB)

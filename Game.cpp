@@ -53,7 +53,7 @@ Game::Game(int nRows, int nCols)
 Game::~Game()
 {
 	for (int i = 0; i < counter; i++) {
-		delete ship_arr[counter];
+		delete ship_arr[i];
    }
 }
 
@@ -149,15 +149,15 @@ Player* Game::play(Player* p1, Player* p2, bool shouldPause) // attempts to run 
 	while (!b1.allShipsDestroyed() && !b2.allShipsDestroyed()) {// while there is at least one ship on each board, run the game!
 		bool shotHit, shipDestroyed;
 		int shipId;
-		if (p1->isHuman()) {
+		if (p1->isHuman()) { // player one if human
 			b2.display(true);
 			Point attack = p1->recommendAttack();
 			bool valid;
-			valid = b2.attack(attack, shotHit, shipDestroyed, shipId); // player ones turn 
+			valid = b2.attack(attack, shotHit, shipDestroyed, shipId); 
 			p1->recordAttackResult(attack, valid, shotHit, shipDestroyed, shipId);
 			b2.display(true);
 		}
-		else {
+		else { // player one if not human
 			b2.display(false);
 			Point attack = p1->recommendAttack();
 			bool valid;
@@ -165,7 +165,7 @@ Player* Game::play(Player* p1, Player* p2, bool shouldPause) // attempts to run 
 			p1->recordAttackResult(attack, valid, shotHit, shipDestroyed, shipId);
 			b2.display(false);
 		}
-		if (p2->isHuman()) {
+		if (p2->isHuman()) { // player 2 if human
 			bool shotHit1, shipDestroyed1;
 			int shipId1; // p2 turn 
 			b1.display(true);
@@ -185,17 +185,20 @@ Player* Game::play(Player* p1, Player* p2, bool shouldPause) // attempts to run 
 			p2->recordAttackResult(attack1, valid1, shotHit1, shipDestroyed1, shipId1);
 			b1.display(false);
 		}
-	}
-	if (b1.allShipsDestroyed()) {
-		if (p1->isHuman()) {
-			b2.display(false);
+		if (b1.allShipsDestroyed()) { // if p1's board is destroyed
+			if (p1->isHuman()) {
+				b2.display(false);
+			}
+			cout << "p2 won";
+			return p2;
 		}
-		return p2;
+		if (b2.allShipsDestroyed()) {
+			if (p2->isHuman())
+				b1.display(false);
+			cout << "p1 won";
+			return p1;
+		}
 	}
-	if (b2.allShipsDestroyed()) {
-		if(p2->isHuman())
-			b1.display(false);
-		return p1;
-	}
+	
 	
 }

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <queue>
 #include "globals.h"
 class Point;
 class Board;
@@ -54,7 +55,7 @@ class HumanPlayer : public Player
 public:
 	HumanPlayer(std::string nm, const Game& g)
 		:Player(nm, g) {};
-	virtual bool isHubam() const  { return true; }
+	virtual bool isHuman() const  { return true; }
 	virtual bool placeShips(Board& b);
 	virtual Point recommendAttack();
 	virtual void recordAttackResult(Point p, bool validShot, bool shotHit,
@@ -65,19 +66,20 @@ class MediocrePlayer : public Player
 {
 public:
 	MediocrePlayer(std::string nm, const Game& g)
-		:Player(nm, g) {state = 1;};
+		:Player(nm, g) {
+		state = 1;;
+	};
 	virtual bool placeShips(Board& b);
 	virtual Point recommendAttack();
 	virtual void recordAttackResult(Point p, bool validShot, bool shotHit,
-		bool shipDestroyed, int shipId);
+	bool shipDestroyed, int shipId);
 	virtual void recordAttackByOpponent(Point p);
 	void determineRadius(int &n, int &e, int &w, int &s);
-	bool tryAgain(Board &b, Point origin, int shipId, Direction dir);
+	bool attemptPlace(Board &b, Point origin, int shipId);
 	void addWillShoot(int n, int e, int w, int s);
 private:
-	Point will_shoot[16];
-	int will_count = 0;
-	int shooting;
+	std::queue <Point> will_shoot;
+	int shooting =0;
 	std::vector <Point> has_shot;
 	Point target_shot;
 	Point arr_origin[100];

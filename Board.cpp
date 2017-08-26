@@ -60,14 +60,18 @@ bool Board::placeShip(Point topOrLeft, int shipId, Direction dir)
 	char symbol = m_game.shipSymbol(shipId);
 	int row = topOrLeft.r;
 	int col = topOrLeft.c;
+	
 	if (!m_game.isValid(topOrLeft)) { // if part of ship is out of bounds return false 
 		return false;
 	}
 	char history[5];// keep track of what we may  overwrite on board in case of errors
 	if (dir == 0) {
+		if (col + length-1 > m_game.cols() - 1) {
+			return false;
+		}
 		int i = 0;
 		while( i < length){
-			if ((m_board[row][col + i]) != '.') { // if its anything but empty return false, otherwise assign with symbol
+			if ((m_board[row][col + i]) == '.') { // if its anything but empty return false, otherwise assign with symbol
 				history[i] = m_board[row][col + i];
 				m_board[row][col + i] = symbol;
 				i++;
@@ -82,9 +86,12 @@ bool Board::placeShip(Point topOrLeft, int shipId, Direction dir)
 		}
 	}
 	else { // for vertical placement
+		if (row + length -1> m_game.rows() - 1) {
+			return false;
+		}
 		int i = 0;
 		while (i < length) {
-			if ((m_board[row + i][col]) != '.') { // undo if space isnt empty
+			if ((m_board[row + i][col]) == '.') { // undo if space isnt empty
 				history[i] = m_board[row + i][col];
 				m_board[row + i][col] = symbol;
 				i++;
@@ -147,15 +154,17 @@ bool Board::unplaceShip(Point topOrLeft, int shipId, Direction dir)
 
 void Board::display(bool shotsOnly) const // displays either only shots or the regular board
 {
+	int rows = m_game.rows();
+	int cols = m_game.cols();
 	if (!shotsOnly) {
 		cout << "  ";
 		int numShips = m_game.nShips();
-		for (int i = 0; i < numShips; i++) {
+		
+		for (int i = 0; i < cols; i++) {
 			cout << i;
 		}
 		cout << endl;
-		int rows = m_game.rows();
-		int cols = m_game.cols();
+		
 		for (int r = 0; r < rows; r++) {
 			cout << r << " ";
 			for (int c = 0; c < cols; c++) {
@@ -171,8 +180,6 @@ void Board::display(bool shotsOnly) const // displays either only shots or the r
 			cout << i;
 		}
 		cout << endl;
-		int rows = m_game.rows();
-		int cols = m_game.cols();
 		for (int r = 0; r < rows; r++) {
 			cout << r << " ";
 			for (int c = 0; c < cols; c++) {
@@ -190,6 +197,8 @@ void Board::display(bool shotsOnly) const // displays either only shots or the r
 
 bool Board::attack(Point p, bool& shotHit, bool& shipDestroyed, int& shipId)
 {
+	shotHit = false;
+	shipDestroyed = false;
 	int row = p.r;
 	int col = p.c;
 	if (!m_game.isValid(p)) {
@@ -199,20 +208,13 @@ bool Board::attack(Point p, bool& shotHit, bool& shipDestroyed, int& shipId)
 		return false;
 	}
 	char temp_symbol = m_board[row][col];
-	if (m_board[row][col] != '.') { // if we hit a ship mark it
+	if (m_board[row][col] != '.' ) { // if we hit a ship mark it
 		shotHit = true;
 		m_board[row][col] = 'X';
+	
 	}else {
 		shotHit = false;
-	}
-	if (m_board[row + 1][col] != temp_symbol && m_board[row - 1][col] != temp_symbol && // search surroundings, if ship destroyed
-		m_board[row][col+1] != temp_symbol && m_board[row][col-1] != temp_symbol) {
-
-		shipDestroyed = true;
-		shipId = m_game.lookUp(temp_symbol);
-	}
-	else {
-		shipDestroyed = false;
+		m_board[row][col] = 'o';
 	}
 	return true;
 }
