@@ -15,8 +15,8 @@ there will be an instance of the Board class for each player.
 4. A HumanPlayer class: 
  Prompts the user to decide where to place ships, and where to attack. 
 
-5. A MediocrePlayer class: Uses mediocre algorithms to determine placement of ships, and attack
+5. A MediocrePlayer : Uses the Hunt/ Target algorithm that randomly attacks until it hits a ship. Upon hitting a ship, "target" mode is activated and the player will shoot around that target point.
 
-6. A good player that uses good algorithms to determine placement of ships, and where to attack. Good luck winning..
+6. A GoodPlayer that uses density functions to calculate the probability of a ship being at a certain point.
 
 7. A Game class: This class is used to run a complete game between two players.
