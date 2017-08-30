@@ -23,9 +23,9 @@ int main()
 
     cout << "Select one of these choices for an example of the game:" << endl;
     cout << "  1.  A mini-game between two mediocre players" << endl;
-    cout << "  2.  A mediocre player against a human player" << endl;
+    cout << "  2.  A good player against a human player" << endl;
     cout << "  3.  A " << NTRIALS
-         << "-game match between a mediocre and an awful player, with no pauses"
+         << "-game match between a mediocre and an good player, with no pauses"
          << endl;
     cout << "Enter your choice: ";
     string line;
@@ -36,7 +36,7 @@ int main()
     }
     else if (line[0] == '1')
     {
-        Game g(2, 3);
+        Game g(3, 3);
         g.addShip(2, 'R', "rowboat");
         Player* p1 = createPlayer("mediocre", "Popeye", g);
         Player* p2 = createPlayer("mediocre", "Bluto", g);
@@ -49,7 +49,7 @@ int main()
     {
         Game g(10, 10);
         addStandardShips(g);
-        Player* p1 = createPlayer("mediocre", "Mediocre Midori", g);
+        Player* p1 = createPlayer("good", "Good Guy Gary", g);
         Player* p2 = createPlayer("human", "Shuman the Human", g);
         g.play(p1, p2);
         delete p1;
@@ -57,15 +57,15 @@ int main()
     }
     else if (line[0] == '3')
     {
-        int nMediocreWins = 0;
+        int goodWins = 0;
 
         for (int k = 1; k <= NTRIALS; k++)
         {
             cout << "============================= Game " << k
                  << " =============================" << endl;
-            Game g(10, 10);
+            Game g(5, 5);
             addStandardShips(g);
-            Player* p1 = createPlayer("awful", "Awful Audrey", g);
+            Player* p1 = createPlayer("good", "Good guy Gary", g);
             Player* p2 = createPlayer("mediocre", "Mediocre Mimi", g);
 			Player* winner;
 			if (g.play(p1, p2, false) == p1) {
@@ -74,12 +74,12 @@ int main()
 			else {
 				winner = p2;
 			}
-            if (winner == p2)
-                nMediocreWins++;
+            if (winner == p1)
+                goodWins++;
             delete p1;
             delete p2;
         }
-        cout << "The mediocre player won " << nMediocreWins << " out of "
+        cout << "The good player won " << goodWins << " out of "
              << NTRIALS << " games." << endl;
     }
     else

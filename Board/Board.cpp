@@ -12,7 +12,7 @@ Board::Board(const Game& g)
 {
 	for (int r = 0; r < m_game.rows(); r++) {
  		for (int c = 0; c < m_game.cols(); c++) {
-			m_board[r][c] = '.';
+				m_board[r][c] = '.';
 		}
 	}
 }
@@ -23,7 +23,9 @@ void Board::clear()
 {
 	for (int r = 0; r < m_game.rows(); r++) {
 		for (int c = 0; c < m_game.cols(); c++) {
-			m_board[r][c] = '.';
+			if (m_board[r][c] != 'o') {
+				m_board[r][c] = '.';
+			}
 		}
 	}
 }
@@ -50,7 +52,7 @@ void Board::unblock()
         }
 }
 
-bool Board::placeShip(Point topOrLeft, int shipId, Direction dir)
+bool Board::placeShip(Point topOrLeft, int shipId, Direction dir,bool just_check)
 {
 	
 	if (shipId < 0 || shipId >= m_game.nShips()) { // if invalid ship id return false
@@ -64,6 +66,9 @@ bool Board::placeShip(Point topOrLeft, int shipId, Direction dir)
 	if (!m_game.isValid(topOrLeft)) { // if part of ship is out of bounds return false 
 		return false;
 	}
+	if (m_board[row][col] == 'w') {
+		return false;
+	}
 	char history[5];// keep track of what we may  overwrite on board in case of errors
 	if (dir == 0) {
 		if (col + length-1 > m_game.cols() - 1) {
@@ -71,15 +76,21 @@ bool Board::placeShip(Point topOrLeft, int shipId, Direction dir)
 		}
 		int i = 0;
 		while( i < length){
-			if ((m_board[row][col + i]) == '.') { // if its anything but empty return false, otherwise assign with symbol
+			if ((m_board[row][col + i]) == '.' || m_board[row + i][col] == 'w') { // if its anything but empty return false, otherwise assign with symbol
 				history[i] = m_board[row][col + i];
-				m_board[row][col + i] = symbol;
-				i++;
+				if (!just_check) {
+					m_board[row][col + i] = symbol;
+					i++;
+				}
+				else
+					i++;
 			}
 			else {
-				while (i > 0) {
-					i--;
-					m_board[row][col + i] = history[i];
+				if (!just_check) {
+					while (i > 0) {
+						i--;
+						m_board[row][col + i] = history[i];
+					}
 				}
 				return false;
 			}
@@ -91,15 +102,19 @@ bool Board::placeShip(Point topOrLeft, int shipId, Direction dir)
 		}
 		int i = 0;
 		while (i < length) {
-			if ((m_board[row + i][col]) == '.') { // undo if space isnt empty
-				history[i] = m_board[row + i][col];
-				m_board[row + i][col] = symbol;
+			if ((m_board[row + i][col]) == '.' || m_board[row+i][col] == 'w') { // undo if space isnt empty
+				if (!just_check) {
+					history[i] = m_board[row + i][col];
+					m_board[row + i][col] = symbol;
+				}
 				i++;
 			}
 			else {
-				while (i > 0) {
-					i--;
-					m_board[row + i][col] = history[i];
+				if (!just_check) {
+					while (i > 0) {
+						i--;
+						m_board[row + i][col] = history[i];
+					}
 				}
 				return false;
 			}
@@ -115,41 +130,41 @@ bool Board::unplaceShip(Point topOrLeft, int shipId, Direction dir)
 	}
 	int length = m_game.shipLength(shipId);
 	char history[10];
-	int row = topOrLeft.r;
-	int col = topOrLeft.c;
-	char symbol = m_game.shipSymbol(shipId);
-	
-	if (dir == 0) {
-		for (int i = 0; i < length; i++) {
-			if (m_board[row][col + i] != symbol) { // if we dont have our symbol, undo, otherwise replace it with the empty space
-				while (i > 0) {
-					i--;
-					m_board[row][col + i] = history[i];
-				}
-				return false;
+int row = topOrLeft.r;
+int col = topOrLeft.c;
+char symbol = m_game.shipSymbol(shipId);
+
+if (dir == 0) {
+	for (int i = 0; i < length; i++) {
+		if (m_board[row][col + i] != symbol) { // if we dont have our symbol, undo, otherwise replace it with the empty space
+			while (i > 0) {
+				i--;
+				m_board[row][col + i] = history[i];
 			}
-			else {
-				history[i] = m_board[row][col + i];
-				m_board[row][col + i] = '.';
-			}
+			return false;
+		}
+		else {
+			history[i] = m_board[row][col + i];
+			m_board[row][col + i] = '.';
 		}
 	}
-	else {
-		for (int i = 0; i < length; i++) {
-			if (m_board[row + i][col] != symbol) {
-				while (i > 0) {
-					i--;
-					m_board[row + i][col] = history[i];
-				} 
-				return false;
+}
+else {
+	for (int i = 0; i < length; i++) {
+		if (m_board[row + i][col] != symbol) {
+			while (i > 0) {
+				i--;
+				m_board[row + i][col] = history[i];
 			}
-			else {
-				history[i] = m_board[row + i][col];
-				m_board[row+i][col] = '.';
-			}
+			return false;
+		}
+		else {
+			history[i] = m_board[row + i][col];
+			m_board[row + i][col] = '.';
 		}
 	}
-	return true;
+}
+return true;
 }
 
 void Board::display(bool shotsOnly) const // displays either only shots or the regular board
@@ -159,12 +174,12 @@ void Board::display(bool shotsOnly) const // displays either only shots or the r
 	if (!shotsOnly) {
 		cout << "  ";
 		int numShips = m_game.nShips();
-		
+
 		for (int i = 0; i < cols; i++) {
 			cout << i;
 		}
 		cout << endl;
-		
+
 		for (int r = 0; r < rows; r++) {
 			cout << r << " ";
 			for (int c = 0; c < cols; c++) {
@@ -208,7 +223,29 @@ bool Board::attack(Point p, bool& shotHit, bool& shipDestroyed, int& shipId)
 		return false;
 	}
 	char temp_symbol = m_board[row][col];
-	if (m_board[row][col] != '.' ) { // if we hit a ship mark it
+	if (m_board[row][col] != '.') { // if we hit a ship mark it
+		for (int i = 0; i < m_game.nShips(); i++) {
+			if (temp_symbol == m_game.shipSymbol(i)) {
+				shipId = i;
+			}
+		}
+		if (row < m_game.rows()-1) { // frustrating
+			if (m_board[row + 1][col] != temp_symbol) {
+				if (col < m_game.cols()-1) {
+					if (m_board[row][col + 1] !=temp_symbol) {
+						if (row > 0) {
+							if (m_board[row - 1][col] != temp_symbol) {
+								if (col > 0) {
+									if (m_board[row][col - 1]) {
+										shipDestroyed = true;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		shotHit = true;
 		m_board[row][col] = 'X';
 	
@@ -229,4 +266,13 @@ bool Board::allShipsDestroyed() const
 		}
 	}
 	return true;
+}
+char Board::get(Point p) {
+	return m_board[p.r][p.c];
+}
+void Board::write(Point p) {
+	m_board[p.r][p.c] = 'w';
+}
+void Board::record(Point p) {
+	m_board[p.r][p.c] = 'o';
 }

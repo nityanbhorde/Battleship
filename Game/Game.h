@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <cassert>
+#include "../globals.h"
 
 class Point;
 class Player;

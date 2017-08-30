@@ -15,7 +15,7 @@ class Point
   public:
     Point() : r(0), c(0) {}
 	Point(int rr, int cc) : r(rr), c(cc) {}
-	bool operator ==( const Point &b) {
+	bool operator ==( const Point &b) const{
 		if (r == b.r && c == b.c) {
 			return true;
 		}
@@ -24,6 +24,18 @@ class Point
     int r;
     int c;
 };
+namespace std // hash function for unordered map
+{
+	template <>
+	struct hash<Point>
+	{
+		size_t operator()(const Point& k) const
+		{
+			// Compute individual hash values for two data members and combine them using XOR and bit shifting
+			return ((hash<int>()(k.r) ^ (hash<int>()(k.c) << 1)) >> 1);
+		}
+	};
+}
 
   // Return a uniformly distributed random int from 0 to limit-1
 inline int randInt(int limit)
